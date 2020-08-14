@@ -499,15 +499,15 @@ For example, the prefix `172.17.162.0/24` corresponds to the AS `17-ffaa:1:da2`.
 It is a fun exercise to calculate the IP prefix for your AS by hand (or with a custom script), but you can also simply use the following one-liner:
 
 ```shell
-a=${AS: -3: -2} b=${AS: -2} c=`echo "($ISD-17) * 4 + $((16#$a)) + 4" | bc` d=$((16#$b)) && echo "172.$c.$d.0/24"
+a=${AS: -3: -2} b=${AS: -2} c=`echo "($ISD-17) * 4 + $((16#$a)) + 4" | bc` d=$((16#$b)) subnet="172.$c.$d.0/24" myIP="172.$c.$d.1" && echo "subnet: $subnet, IP: $myIP"
 ```
 
 You can set up a simple routing configuration, where only applications on SIG host can make use of the link:
 
 ```shell
 # Assign an address in your IP prefix
-sudo ip address add 172.XX.XXX.1 dev ${sigID}
-# Setup route to 10.42.0.0/24 in sigA.json
+sudo ip address add ${myIP} dev ${sigID}
+# Setup route to 10.42.0.0/24
 sudo ip route add 10.42.0.0/24 dev ${sigID}
 ```
 
